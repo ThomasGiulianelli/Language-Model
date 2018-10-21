@@ -2,6 +2,8 @@
     Thomas Giulianelli
     CSC 470 NLP - Project 2
     10/25/16
+
+    Updated 10/20/18
 """
 
 import collections
@@ -25,8 +27,8 @@ class LanguageModel:
         self.numTrainingTokens = 0
         self.unigramProbabilitiesMLE = {}
         self.bigramProbabilitiesMLE = {}
-        self.counter1 = None
-        self.counter2 = None
+        self.counter1 = None  #unigrams
+        self.counter2 = None  #bigrams
         self.unigramProbabilitiesAdd1 = {}
         self.bigramProbabilitiesAdd1 = {}
         self.testTokensString = ""
@@ -161,12 +163,20 @@ class LanguageModel:
             sentence, iteration = self.findBigramsMLE(temp[1], sentence, iteration) # warning: this is recursive
         return sentence, iteration
 
-    # randomly generates a few sentences using the MLE LM
+    # Generates 10 sentences using the MLE LM
     def generateSentencesMLE(self):
         for i in range(10):
             iteration = 1
             sentence = ""
-            firstWord = random.choice([k for k in self.counter1 for dummy in range(self.counter1[k])]) #randomly choose a word
+            
+            #Weighted Select to choose first word of the sentence
+            randomWeight = random.randint(1,self.numTrainingTokens)
+            for word,frequency in self.counter1.iteritems():
+                randomWeight = randomWeight - frequency
+                if  randomWeight <= 0:
+                    firstWord = word
+                    break
+
             sentence, iteration = self.findBigramsMLE(firstWord, sentence, iteration)
             print "%s" % sentence + "\n"
 
@@ -189,12 +199,20 @@ class LanguageModel:
             sentence, iteration = self.findBigramsAdd1(temp[1], sentence, iteration) # warning: this is recursive
         return sentence, iteration
 
-    # randomly generates a few sentences using the Add1 LM
+    # Generates 10 sentences using the Add1 LM
     def generateSentencesAdd1(self):
         for i in range(10):
             iteration = 1
             sentence = ""
-            firstWord = random.choice([k for k in self.counter1 for dummy in range(self.counter1[k])]) #randomly choose a word
+
+            #Weighted Select to choose first word of the sentence
+            randomWeight = random.randint(1,self.numTrainingTokens)
+            for word,frequency in self.counter1.iteritems():
+                randomWeight = randomWeight - frequency
+                if  randomWeight <= 0:
+                    firstWord = word
+                    break
+
             sentence, iteration = self.findBigramsAdd1(firstWord, sentence, iteration)
             print sentence + "\n"
 
